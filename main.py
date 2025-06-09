@@ -59,7 +59,7 @@ def mark_attendance(token):
 
     response = requests.post(url, headers=headers, data=json.dumps(payload))
     if response.status_code == 200:
-        print("Attendance marked successfully")
+        print("Attendance marked successfully for {EMPLOYEE_ID}")
         print(response.json())
     else:
         print("Attendance failed:", response.status_code, response.text)
