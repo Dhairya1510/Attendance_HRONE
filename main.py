@@ -2,6 +2,7 @@ import os
 import requests
 import json
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # Load credentials
 USERNAME = os.getenv("HRONE_USERNAME")
@@ -22,14 +23,16 @@ def get_access_token():
     response = requests.post(url, headers=headers, data=payload)
     if response.status_code == 200:
         data = response.json()
+        user = data.get("userName")
         return data.get("access_token")
+        print("login successful for username:{user}")
     else:
         print("Login failed:", response.status_code, response.text)
         return None
 
 def mark_attendance(token):
     url = "https://app.hrone.cloud/api/timeoffice/mobile/checkin/Attendance/Request"
-    now = datetime.now()
+    now = datetime.now(ZoneInfo("Asia/Kolkata"))
     punch_time = now.strftime("%Y-%m-%dT%H:%M")
 
     payload = {
