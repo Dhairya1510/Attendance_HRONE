@@ -2,9 +2,8 @@ name: HROne Attendance Cron
 
 on:
   schedule:
-    - cron: '25 3 * * *'
-    - cron: '25 12 * * *'
-    - cron: '*/5 * * * *'
+    - cron: '00 3 * * *'
+    - cron: '30 12 * * *'
   workflow_dispatch:       # Optional: run manually from GitHub UI
 
 jobs:
