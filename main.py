@@ -8,9 +8,9 @@ USERNAME = os.getenv("HRONE_USERNAME")
 PASSWORD = os.getenv("HRONE_PASSWORD")
 EMPLOYEE_ID = os.getenv("EMPLOYEE_ID")
 
-def get_access_token():
+def get_access_token(username:str, password:str):
     url = "https://gateway.hrone.cloud/oauth2/token"
-    payload = f"username={USERNAME}&password={PASSWORD}&grant_type=password&loginType=1&companyDomainCode=handyonline&isUpdated=0&validSource=Y&deviceName=Chrome-mac-os-x-15"
+    payload = f"username={username}&password={password}&grant_type=password&loginType=1&companyDomainCode=handyonline&isUpdated=0&validSource=Y&deviceName=Chrome-mac-os-x-15"
 
     headers = {
         'accept': 'application/json, text/plain, */*',
@@ -29,7 +29,7 @@ def get_access_token():
         print("Login failed:", response.status_code, response.text)
         return None
 
-def mark_attendance(token):
+def mark_attendance(token, employee_id):
     url = "https://app.hrone.cloud/api/timeoffice/mobile/checkin/Attendance/Request"
     now = datetime.now(ZoneInfo("Asia/Kolkata"))
     punch_time = now.strftime("%Y-%m-%dT%H:%M")
@@ -37,7 +37,7 @@ def mark_attendance(token):
     payload = {
         "requestType": "A",
         "applyRequestSource": 10,
-        "employeeId": int(EMPLOYEE_ID),
+        "employeeId": int(employee_id),
         "latitude": "",
         "longitude": "",
         "geoAccuracy": "",
@@ -61,18 +61,18 @@ def mark_attendance(token):
 
     response = requests.post(url, headers=headers, data=json.dumps(payload))
     if response.status_code == 200:
-        print(f"Attendance marked successfully for {EMPLOYEE_ID}")
+        print(f"Attendance marked successfully for {employee_id} at {punch_time}")
         print(response.json())
     else:
         print("Attendance failed:", response.status_code, response.text)
 
-def check_holiday(token:str)-> bool:
+def check_holiday(token:str, employee_id:int)-> bool:
     url = "https://app.hrone.cloud/api/timeoffice/attendance/Calendar"
 
     payload = json.dumps({
     "attendanceYear": datetime.now(ZoneInfo("Asia/Kolkata")).year,
     "attendanceMonth": datetime.now(ZoneInfo("Asia/Kolkata")).month,
-    "employeeId": int(EMPLOYEE_ID),
+    "employeeId": employee_id,
     "calendarViewType": "C"
     })
     headers = {
@@ -94,8 +94,8 @@ def check_holiday(token:str)-> bool:
     else:
         print("Failed to fetch holidays:", response.status_code, response.text)
         return False
-    
-def check_leave(token):
+
+def check_leave(token:str):
     url = "https://app.hrone.cloud/api/Request/InboxRequest/Search"
 
     payload = json.dumps({
@@ -136,10 +136,23 @@ def check_leave(token):
         print("No leave requests found for today.")
         return False
     else:
-        print("Failed to fetch leave requests:", response.status_code, response.text)
+        print("No leave requests found")
         return False
 
 if __name__ == "__main__":
-    token = get_access_token()
-    if token and not check_holiday(token) and not check_leave(token):
-        mark_attendance(token)
+    usernames = USERNAME.split(",")
+    passwords = PASSWORD.split(",")
+    employee_ids = EMPLOYEE_ID.split(",")
+    for i in range(len(usernames)):
+        print(f"Processing for {usernames[i]} with employee ID {employee_ids[i]}")
+        token = get_access_token(usernames[i], passwords[i])
+        if token:
+            if not check_holiday(token, int(employee_ids[i])):
+                if not check_leave(token):
+                    mark_attendance(token, employee_ids[i])
+                else:
+                    print("Leave request found, skipping attendance marking.")
+            else:
+                print("Today is a holiday or weekend, skipping attendance marking.")
+        else:
+            print(f"Failed to get access token for {usernames[i]}")
