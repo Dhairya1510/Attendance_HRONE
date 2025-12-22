@@ -66,6 +66,7 @@ You can also trigger the workflow manually from the GitHub Actions tab.
 
 - The script checks for holidays and leaves before marking attendance
 - Make sure your credentials are kept secure and not shared
+- push some edits in readme so github workflow dont stop
 - The script uses IST (Indian Standard Time) for all operations
 
 ## License
