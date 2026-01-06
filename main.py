@@ -3,6 +3,9 @@ import requests
 import json
 from datetime import datetime
 from zoneinfo import ZoneInfo
+from dotenv import load_dotenv
+
+load_dotenv()
 
 USERNAME = os.getenv("HRONE_USERNAME")
 PASSWORD = os.getenv("HRONE_PASSWORD")
@@ -140,19 +143,18 @@ def check_leave(token:str):
         return False
 
 if __name__ == "__main__":
-    usernames = USERNAME.split(",")
-    passwords = PASSWORD.split(",")
-    employee_ids = EMPLOYEE_ID.split(",")
-    for i in range(len(usernames)):
-        print(f"Processing for {usernames[i]} with employee ID {employee_ids[i]}")
-        token = get_access_token(usernames[i], passwords[i])
-        if token:
-            if not check_holiday(token, int(employee_ids[i])):
-                if not check_leave(token):
-                    mark_attendance(token, employee_ids[i])
-                else:
-                    print("Leave request found, skipping attendance marking.")
+    if not USERNAME or not PASSWORD or not EMPLOYEE_ID:
+        print("Please provide all required environment variables.")
+        exit(1)
+    print(f"Processing for {USERNAME} with employee ID {EMPLOYEE_ID}")
+    token = get_access_token(USERNAME, PASSWORD)
+    if token:
+        if not check_holiday(token, EMPLOYEE_ID):
+            if not check_leave(token):
+                mark_attendance(token, EMPLOYEE_ID)
             else:
-                print("Today is a holiday or weekend, skipping attendance marking.")
+                print("Leave request found, skipping attendance marking.")
         else:
-            print(f"Failed to get access token for {usernames[i]}")
+            print("Today is a holiday or weekend, skipping attendance marking.")
+    else:
+        print(f"Failed to get access token for {USERNAME}")
