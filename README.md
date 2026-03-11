@@ -68,7 +68,7 @@ You can also trigger the workflow manually from the GitHub Actions tab.
 - Make sure your credentials are kept secure and not shared
 - push some edits in readme so github workflow dont stop
 - The script uses IST (Indian Standard Time) for all operations
-- has to do some commit to make this running
+- has to do some commit to make this running smooth
 ## License
 
 MIT License
