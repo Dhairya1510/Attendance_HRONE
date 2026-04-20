@@ -55,6 +55,8 @@ Automatically mark attendance everyday on your behalf using GitHub Actions. This
    python main.py
    ```
 
+
+
 ## GitHub Actions Configuration
 
 The workflow is configured to run automatically at:

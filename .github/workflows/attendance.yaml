@@ -2,12 +2,9 @@ name: HROne Attendance Cron
 
 on:
   schedule:
-    - cron: '30 2 * * 1-5'   # 9:00 AM IST, weekdays only (Mon–Fri)
-    - cron: '15 12 * * 1-5'  # 6:00 PM IST, weekdays only (Mon–Fri)
-  workflow_dispatch:        # Optional: run manually from GitHub UI
-
-permissions:
-  contents: read
+    - cron: '00 1 * * *'   # 8:30 AM IST
+    - cron: '00 12 * * *'  # 6:00 PM IST
+  workflow_dispatch:       # Optional: run manually from GitHub UI
 
 jobs:
   mark-attendance:
