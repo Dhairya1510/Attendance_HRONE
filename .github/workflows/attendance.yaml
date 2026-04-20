@@ -2,9 +2,12 @@ name: HROne Attendance Cron
 
 on:
   schedule:
-    - cron: '30 2 * * *'   # 9:00 AM IST
-    - cron: '15 12 * * *'  # 6:00 PM IST
-  workflow_dispatch:       # Optional: run manually from GitHub UI
+    - cron: '30 2 * * 1-5'   # 9:00 AM IST, weekdays only (Mon–Fri)
+    - cron: '15 12 * * 1-5'  # 6:00 PM IST, weekdays only (Mon–Fri)
+  workflow_dispatch:        # Optional: run manually from GitHub UI
+
+permissions:
+  contents: read
 
 jobs:
   mark-attendance:
@@ -27,4 +30,7 @@ jobs:
           HRONE_USERNAME: ${{ secrets.HRONE_USERNAME }}
           HRONE_PASSWORD: ${{ secrets.HRONE_PASSWORD }}
           EMPLOYEE_ID: ${{ secrets.EMPLOYEE_ID }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_REPO: ${{ github.repository }}
         run: python main.py
