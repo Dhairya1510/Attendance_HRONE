@@ -4,6 +4,7 @@ Automatically mark attendance everyday on your behalf using GitHub Actions. This
 
 ## Features
 
+
 - Automatic attendance marking at configured times (9:00 AM and 6:00 PM IST)
 - Holiday and weekend detection
 - Leave detection

@@ -27,4 +27,7 @@ jobs:
           HRONE_USERNAME: ${{ secrets.HRONE_USERNAME }}
           HRONE_PASSWORD: ${{ secrets.HRONE_PASSWORD }}
           EMPLOYEE_ID: ${{ secrets.EMPLOYEE_ID }}
+          REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GH_REPO: ${{ github.repository }}
         run: python main.py
